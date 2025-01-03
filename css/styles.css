@@ -1,0 +1,146 @@
+/* Общие стили для всего проекта */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.links {
+    margin-top: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* Стили для страницы чата */
+#chat {
+    border: 1px solid #ccc;
+    height: 400px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    max-width: 80%;
+    position: relative;
+}
+
+.message.sent {
+    background-color: #d1ffd6;
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message.received {
+    background-color: #fff;
+    border: 1px solid #eee;
+    flex-direction: row;
+}
+
+.message img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.message .content {
+    max-width: calc(100% - 60px);
+    word-wrap: break-word;
+}
+
+.message .timestamp {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 5px;
+    display: block;
+    cursor: pointer;
+}
+
+.message .timestamp:hover::after {
+    content: attr(data-date);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 0.8em;
+    color: #333;
+    white-space: nowrap;
+}
+
+.input-container {
+    display: flex;
+    margin-top: 10px;
+}
+
+.input-container input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-container button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.input-container button:hover {
+    background-color: #0056b3;
+}

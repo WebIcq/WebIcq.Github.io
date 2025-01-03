@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title dkon-trans="searchuser">User Search</title>
+    <script src="locales/dkon.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        form input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            flex: 1;
+        }
+        form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        #back-button {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #back-button:hover {
+            background-color: #5a6268;
+        }
+        #search-results {
+            width: 100%;
+            max-width: 90%;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .search-result {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+        .search-result img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .search-result-info {
+            flex-grow: 1;
+        }
+        .search-result-info strong {
+            font-size: 16px;
+            color: #333;
+        }
+        .search-result-info span {
+            display: block;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button dkon-trans="back" id="back-button">back</button>
+        <h1 dkon-trans="searchuser">User Search</h1>
+        <form id="search-form">
+            <input type="hidden" name="clientId" value="1302">
+            <input type="hidden" name="accountId" value="">
+            <input type="hidden" name="accessToken" value="">
+            <input type="text" dkon-trans="search_query" id="search-query" name="query" placeholder="Enter a search query">
+            <button dkon-trans="search" type="submit">Search</button>
+        </form>
+        <div id="search-results"></div>
+    </div>
+
+    <script>
+        const searchApiUrl = 'https://api.dkon.app/api/v3/method/app.search';
+        const messageApiUrl = 'https://api.dkon.app/api/v3/method/msg.new';
+        const defaultPhotoUrl = 'https://res.dkon.app/img/profile_default_photo.png';
+        const accountId = localStorage.getItem('accountId');
+        const accessToken = localStorage.getItem('accessToken');
+
+        document.querySelector('#search-form input[name="accountId"]').value = accountId;
+        document.querySelector('#search-form input[name="accessToken"]').value = accessToken;
+
+        async function searchUsers(query) {
+            const form = document.getElementById('search-form');
+            const formData = new FormData(form);
+            formData.append('query', query);
+
+            try {
+                const response = await fetch(searchApiUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+                const searchResultsDiv = document.getElementById('search-results');
+                searchResultsDiv.innerHTML = '';
+
+                if (!data.error && data.itemCount > 0) {
+                    data.items.forEach(item => {
+                        const userElement = document.createElement('div');
+                        userElement.className = 'search-result';
+                        userElement.innerHTML = `
+                            <img src="${item.lowPhotoUrl || defaultPhotoUrl}" alt="${item.username}">
+                            <div class="search-result-info">
+                                <strong>${item.fullname}</strong> (${item.username})<br>
+                                <span>${item.status}</span>
+                            </div>
+                        `;
+                        userElement.addEventListener('click', () => openChat(item.id, item.username));
+                        searchResultsDiv.appendChild(userElement);
+                    });
+                } else {
+                    searchResultsDiv.textContent = 'Пользователи не найдены.';
+                }
+            } catch (error) {
+                console.error('Ошибка при поиске пользователей:', error);
+            }
+        }
+
+        async function openChat(profileId, username) {
+            const formData = new FormData();
+            formData.append('clientId', '1302');
+            formData.append('accountId', accountId);
+            formData.append('accessToken', accessToken);
+            formData.append('profileId', profileId);
+            formData.append('chatToUserId', profileId);
+            formData.append('messageText', `Private chat with ${username} started!`);
+
+            try {
+                const response = await fetch(messageApiUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (!data.error) {
+                    window.location.href = `dialogs.html?profileId=${profileId}&chatId=${data.chatId}`;
+                } else {
+                    console.error('Ошибка при создании чата:', data.error_code);
+                }
+            } catch (error) {
+                console.error('Ошибка при создании чата:', error);
+            }
+        }
+         document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = 'dialogs.html'; //chat.html
+        });
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-query').value;
+            searchUsers(query);
+        });
+    </script>
+</body>
+</html>

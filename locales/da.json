@@ -1,0 +1,23 @@
+{
+    "login": "Log ind",
+    "register": "Tilmeld",
+    "wltmsg": "Velkommen til Messenger",
+    "username": "Brugernavn",
+    "password": "Adgangskode",
+    "logintext": "Brugernavn (6-12 tegn, bogstaver, cifre, understreg)",
+    "fullnametxt": "Fulde navn (1-20 tegn)",
+    "passtxt": "Adgangskode (6-32 tegn)",
+    "email": "E-mail",
+    "ref": "henviser",
+    "auth": "Autorisation",
+    "enter": "Indtast",
+    "messenger": "Messenger",
+    "last_dialogs": "Seneste dialoger",
+    "msgtp": "Indtast en besked",
+    "searchuser": "Bruger søgning",
+    "back": "tilbage",
+    "search": "Søg",
+    "search_query": "Indtast en søgeforespørgsel",
+    "no_users_found": "Ingen brugere fundet.",
+    "profile_sitting": "Profilindstillinger"
+}

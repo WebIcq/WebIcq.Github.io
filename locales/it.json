@@ -1,0 +1,23 @@
+{
+    "login": "Accedi",
+    "register": "Registrati",
+    "wltmsg": "Benvenuto su Messenger",
+    "username": "Nome utente",
+    "password": "Password",
+    "logintext": "Nome utente (6-12 caratteri, lettere, numeri, trattini bassi)",
+    "fullnametxt": "Nome completo (1-20 caratteri)",
+    "passtxt": "Password (6-32 caratteri)",
+    "email": "Email",
+    "ref": "riferente",
+    "auth": "Autorizzazione",
+    "enter": "Entra",
+    "messenger": "Messenger",
+    "last_dialogs": "Ultimi dialoghi",
+    "msgtp": "Inserisci un messaggio",
+    "searchuser": "Cerca utente",
+    "back": "indietro",
+    "search": "Cerca",
+    "search_query": "Inserisci una query di ricerca",
+    "no_users_found": "Nessun utente trovato.",
+    "profile_sitting": "Impostazioni del profilo"
+}

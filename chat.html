@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #back-button {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #back-button:hover {
+            background-color: #5a6268;
+        }
+        #chat {
+            border: 1px solid #ccc;
+            height: 400px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            max-width: 80%;
+            position: relative;
+        }
+        .message.sent {
+            background-color: #d1ffd6;
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .message.received {
+            background-color: #fff;
+            border: 1px solid #eee;
+            flex-direction: row;
+        }
+        .message img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 10px;
+        }
+        .message .content {
+            max-width: calc(100% - 60px); /* Учитываем ширину аватара и отступы */
+            word-wrap: break-word;
+        }
+        .message .timestamp {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+            display: block;
+            cursor: pointer;
+        }
+        .message .timestamp:hover::after {
+            content: attr(data-date);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: #fff;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 0.8em;
+            color: #333;
+            white-space: nowrap;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 10px;
+        }
+        .input-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .input-container button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="back-button">Назад</button>
+        <h1>Чат</h1>
+        <div id="chat"></div>
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Введите сообщение...">
+            <button id="sendButton">Отправить</button>
+        </div>
+    </div>
+
+    <audio id="notificationSound" src="https://res.dkon.app/sound/dkon-notification.mp3" preload="auto"></audio>
+
+    <script>
+        const apiUrlChat = 'https://api.dkon.app/api/v3/method/chat.get';
+        const apiUrlSend = 'https://api.dkon.app/api/v3/method/msg.new';
+        const clientId = 1302;
+        const accountId = localStorage.getItem('accountId');
+        const accessToken = localStorage.getItem('accessToken');
+        const urlParams = new URLSearchParams(window.location.search);
+        const profileId = urlParams.get('profileId');
+        const chatId = urlParams.get('chatId');
+        const chatToUserId = profileId;
+        const chatFromUserId = accountId;
+
+        let lastMessageId = null;
+        const notificationSound = document.getElementById('notificationSound');
+
+        function getTimeAgo(time) {
+            const now = new Date();
+            const secondsPast = Math.floor((now - time) / 1000);
+
+            if (secondsPast < 60) {
+                return "Только что";
+            } else if (secondsPast < 3600) {
+                const minutes = Math.floor(secondsPast / 60);
+                return minutes === 1 ? "минуту назад" : `${minutes} минут назад`;
+            } else if (secondsPast < 86400) {
+                const hours = Math.floor(secondsPast / 3600);
+                return hours === 1 ? "Час назад" : `${hours} часов назад`;
+            } else {
+                const days = Math.floor(secondsPast / 86400);
+                return days === 1 ? "день назад" : `${days} дней назад`;
+            }
+        }
+
+        async function loadChat() {
+            try {
+                const formData = new FormData();
+                formData.append('accountId', accountId);
+                formData.append('accessToken', accessToken);
+                formData.append('profileId', profileId);
+                formData.append('chatFromUserId', chatFromUserId);
+                formData.append('chatToUserId', chatToUserId);
+                formData.append('chatId', chatId);
+
+                const response = await fetch(apiUrlChat, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('Ошибка при загрузке чата:', data.error_code);
+                    return;
+                }
+
+                const chatDiv = document.getElementById('chat');
+                chatDiv.innerHTML = '';
+
+                const messages = data.messages.reverse();
+
+                messages.forEach(message => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message';
+                    messageDiv.classList.add(message.fromUserId == accountId ? 'sent' : 'received');
+                    
+                    const avatar = document.createElement('img');
+                    avatar.src = message.fromUserPhotoUrl || 'https://res.dkon.app/img/profile_default_photo.png';
+                    messageDiv.appendChild(avatar);
+                    
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'content';
+                    contentDiv.textContent = message.message;
+                    
+                    const timestamp = document.createElement('span');
+                    timestamp.className = 'timestamp';
+                    const messageDate = new Date(message.createAt * 1000);
+                    timestamp.textContent = getTimeAgo(messageDate);
+                    timestamp.setAttribute('data-date', messageDate.toLocaleString());
+                    
+                    contentDiv.appendChild(timestamp);
+                    messageDiv.appendChild(contentDiv);
+                    chatDiv.appendChild(messageDiv);
+                });
+
+                if (lastMessageId && lastMessageId !== messages[messages.length - 1].id) {
+                    const lastMessage = messages[messages.length - 1];
+                    if (lastMessage.fromUserId !== accountId) {
+                        notificationSound.play().catch(error => {
+                            console.error('Ошибка воспроизведения звука:', error);
+                        });
+                    }
+                }
+
+                lastMessageId = messages[messages.length - 1].id;
+
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            } catch (error) {
+                console.error('Ошибка при загрузке чата:', error);
+            }
+        }
+
+        async function sendMessage() {
+            const messageText = document.getElementById('messageInput').value;
+            if (!messageText) return;
+
+            try {
+                const formData = new FormData();
+                formData.append('clientId', clientId);
+                formData.append('accountId', accountId);
+                formData.append('accessToken', accessToken);
+                formData.append('profileId', profileId);
+                formData.append('chatToUserId', chatToUserId);
+                formData.append('messageText', messageText);
+
+                const response = await fetch(apiUrlSend, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('Ошибка при отправке сообщения:', data.error_code);
+                    return;
+                }
+
+                document.getElementById('messageInput').value = '';
+                loadChat();
+            } catch (error) {
+                console.error('Ошибка при отправке сообщения:', error);
+            }
+        }
+
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = 'dialogs.html';
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            loadChat();
+            setInterval(loadChat, 3000);
+        });
+    </script>
+</body>
+</html>

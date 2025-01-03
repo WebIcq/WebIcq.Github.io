@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Messenger Dalam Kontak</title>
+
+<meta property="og:url" content="https://web.dkon.app"/>
+    <meta property="og:image" content="https://filecloud-1-ars-cont-st.dkon.app/wp-cont/cloud1/dkon.app_e227bb4a0a9b61d7_DKon.app_d9862647cg.jpg"/>
+    <meta property="og:title" content="Messenger"/>
+
+    
+<script defer src="https://mpwmp.dkon.app/pixel/1sbChlpn9clCz30g"></script>
+    <script>
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+</script>
+    
+<style>
+        body {
+            user-select: none; /* Для современных браузеров */
+            -webkit-user-select: none; /* Для Safari */
+            -moz-user-select: none; /* Для Firefox */
+            -ms-user-select: none; /* Для Internet Explorer/Edge */
+        }
+    </style>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .logo {
+            width: 200px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translatey(0);
+            }
+            50% {
+                transform: translatey(-10px);
+            }
+        }
+
+        .loader {
+            width: 100%;
+            max-width: 400px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0;
+            background-color: #4A76A8;
+            animation: loading 6s forwards;
+        }
+
+        @keyframes loading {
+            to {
+                width: 100%;
+            }
+        }
+        
+        img {
+    pointer-events: none; /* Отключает все события указателя для изображений */
+}
+
+
+    </style>
+</head>
+<body>
+
+    <img src="https://res.dkon.app/logotype/DK.svg" alt="logo" class="logo" draggable="false">
+    
+    <div class="loader">
+        <div class="progress"></div>
+    </div>
+<script src="js/loading-index.js"></script>
+</body>
+</html>

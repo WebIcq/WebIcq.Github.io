@@ -1,0 +1,717 @@
+<!-- DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .profile {
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cover {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: -50px auto 10px;
+            display: block;
+            border: 3px solid white;
+        }
+        .info {
+            text-align: center;
+            padding: 20px;
+        }
+        .status {
+            color: green;
+        }
+        .offline {
+            color: red;
+        }
+        .back-button, .chat-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover, .chat-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile">
+    <form id="profileForm" method="POST" action="https://api.dkon.app/api/v3/method/profile.get">
+        <input type="hidden" name="accountId" value="" id="accountId">
+        <input type="hidden" name="accessToken" value="" id="accessToken">
+        <input type="hidden" name="profileId" value="" id="profileId">
+    </form>
+    <div id="cover" class="cover"></div>
+    <img id="avatar" class="avatar" src="" alt="Аватарка">
+    <div class="info">
+        <h2 id="fullname"></h2>
+        <p id="username"></p>
+        <p id="status" class="status"></p>
+    </div>
+    <a href="search.html" class="back-button">Назад</a>
+    <button id="chatButton" class="chat-button">Написать в ЛС</button>
+</div>
+
+<script>
+    const messageApiUrl = 'https://api.dkon.app/api/v3/method/msg.new'; // Замените на правильный URL API для создания чата
+    const accountId = localStorage.getItem('accountId');
+    const accessToken = localStorage.getItem('accessToken');
+
+    async function fetchProfile() {
+        const profileId = new URLSearchParams(window.location.search).get('profileId');
+
+        // Устанавливаем значения в скрытые поля формы
+        document.getElementById('accountId').value = accountId;
+        document.getElementById('accessToken').value = accessToken;
+        document.getElementById('profileId').value = profileId;
+
+        const formData = new FormData(document.getElementById('profileForm'));
+
+        const response = await fetch('https://api.dkon.app/api/v3/method/profile.get', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            document.getElementById('avatar').src = data.normalPhotoUrl;
+            document.getElementById('cover').style.backgroundImage = `url(${data.normalCoverUrl || 'https://res.dkon.app/img/cover_none.png'})`;
+            document.getElementById('fullname').innerText = data.fullname;
+            document.getElementById('username').innerText = `@${data.username}`;
+            document.getElementById('status').innerText = data.status || 'Нет статуса';
+            document.getElementById('status').classList.add(data.online ? 'status' : 'offline');
+            document.getElementById('status').innerText += data.online ? ' (Онлайн)' : ' (Оффлайн)';
+
+            // Добавляем обработчик события для кнопки "Написать в ЛС"
+            document.getElementById('chatButton').addEventListener('click', function() {
+                openChat(profileId, data.username);
+            });
+        } else {
+                        console.error('Ошибка при получении профиля:', data.error_code);
+        }
+    }
+
+    async function openChat(profileId, username) {
+        const formData = new FormData();
+        formData.append('clientId', '1302'); // Замените на ваш clientId
+        formData.append('accountId', accountId);
+        formData.append('accessToken', accessToken);
+        formData.append('profileId', profileId);
+        formData.append('chatToUserId', profileId);
+        formData.append('messageText', `Private chat with ${username} started!`);
+
+        try {
+            const response = await fetch(messageApiUrl, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (!data.error) {
+                window.location.href = `dialogs.html?profileId=${profileId}&chatId=${data.chatId}`;
+            } else {
+                console.error('Ошибка при создании чата:', data.error_code);
+            }
+        } catch (error) {
+            console.error('Ошибка при создании чата:', error);
+        }
+    }
+
+    window.onload = fetchProfile;
+</script>
+
+</body>
+</html-->
+
+<!--DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .profile {
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cover {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: -50px auto 10px;
+            display: block;
+            border: 3px solid white;
+        }
+        .info {
+            text-align: center;
+            padding: 20px;
+        }
+        .status {
+            color: green;
+        }
+        .offline {
+            color: red;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around; /* Распределяет кнопки по горизонтали */
+            margin: 20px auto;
+        }
+        .back-button, .chat-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover, .chat-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile">
+    <form id="profileForm" method="POST" action="https://api.dkon.app/api/v3/method/profile.get">
+        <input type="hidden" name="accountId" value="" id="accountId">
+        <input type="hidden" name="accessToken" value="" id="accessToken">
+        <input type="hidden" name="profileId" value="" id="profileId">
+    </form>
+    <div id="cover" class="cover"></div>
+    <img id="avatar" class="avatar" src="" alt="Аватарка">
+    <div class="info">
+        <h2 id="fullname"></h2>
+        <p id="username"></p>
+        <p id="status" class="status"></p>
+    </div>
+    <a href="search.html" class="back-button">Назад</a>
+    <button id="chatButton" class="chat-button">Написать в ЛС</button>
+</div>
+
+<script>
+    const messageApiUrl = 'https://api.dkon.app/api/v3/method/msg.new'; // Замените на правильный URL API для создания чата
+    const accountId = localStorage.getItem('accountId');
+    const accessToken = localStorage.getItem('accessToken');
+
+    async function fetchProfile() {
+        const profileId = new URLSearchParams(window.location.search).get('profileId');
+
+        // Устанавливаем значения в скрытые поля формы
+        document.getElementById('accountId').value = accountId;
+        document.getElementById('accessToken').value = accessToken;
+        document.getElementById('profileId').value = profileId;
+
+        const formData = new FormData(document.getElementById('profileForm'));
+
+        const response = await fetch('https://api.dkon.app/api/v3/method/profile.get', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            document.getElementById('avatar').src = data.normalPhotoUrl;
+            document.getElementById('cover').style.backgroundImage = `url(${data.normalCoverUrl || 'https://res.dkon.app/img/cover_none.png'})`;
+            document.getElementById('fullname').innerText = data.fullname;
+            document.getElementById('username').innerText = `@${data.username}`;
+
+            // Установка статуса
+            const statusElement = document.getElementById('status');
+            if (data.status) {
+                statusElement.innerText = data.status;
+            }
+            // Установка онлайн-статуса
+            if (data.online) {
+                statusElement.innerText += (data.status ? ' | ' : '') + 'Online';
+                statusElement.classList.add('status');
+            } else {
+                                statusElement.innerText += (data.status ? ' | ' : '') + 'Offline';
+                statusElement.classList.remove('status');
+                statusElement.classList.add('offline');
+            }
+
+            // Добавляем обработчик события для кнопки "Написать в ЛС"
+            document.getElementById('chatButton').addEventListener('click', function() {
+                openChat(profileId, data.username);
+            });
+        } else {
+            console.error('Ошибка при получении профиля:', data.error_code);
+        }
+    }
+
+    async function openChat(profileId, username) {
+        const formData = new FormData();
+        formData.append('clientId', '1302'); // Замените на ваш clientId
+        formData.append('accountId', accountId);
+        formData.append('accessToken', accessToken);
+        formData.append('profileId', profileId);
+        formData.append('chatToUserId', profileId);
+        formData.append('messageText', `Private chat with ${username} started!`);
+
+        try {
+            const response = await fetch(messageApiUrl, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (!data.error) {
+                window.location.href = `dialogs.html?profileId=${profileId}&chatId=${data.chatId}`;
+            } else {
+                console.error('Ошибка при создании чата:', data.error_code);
+            }
+        } catch (error) {
+            console.error('Ошибка при создании чата:', error);
+        }
+    }
+
+    window.onload = fetchProfile;
+</script>
+
+</body>
+</html-->
+
+<!--DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .profile {
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cover {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: -50px auto 10px;
+            display: block;
+            border: 3px solid white;
+        }
+        .info {
+            text-align: center;
+            padding: 20px;
+        }
+        .status {
+            color: green;
+        }
+        .offline {
+            color: red;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around; /* Распределяет кнопки по горизонтали */
+            margin: 20px auto;
+        }
+        .back-button, .chat-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover, .chat-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile">
+    <form id="profileForm" method="POST" action="https://api.dkon.app/api/v3/method/profile.get">
+        <input type="hidden" name="accountId" value="" id="accountId">
+        <input type="hidden" name="accessToken" value="" id="accessToken">
+        <input type="hidden" name="profileId" value="" id="profileId">
+    </form>
+    <div id="cover" class="cover"></div>
+    <img id="avatar" class="avatar" src="" alt="Аватарка">
+    <div class="info">
+        <h2 id="fullname"></h2>
+        <p id="username"></p>
+        <p id="status" class="status"></p>
+    </div>
+    <div class="button-container">
+        <a href="search.html" class="back-button">Назад</a>
+        <button id="chatButton" class="chat-button">Написать в ЛС</button>
+    </div>
+</div>
+
+<script>
+    const messageApiUrl = 'https://api.dkon.app/api/v3/method/msg.new'; // Замените на правильный URL API для создания чата
+    const accountId = localStorage.getItem('accountId');
+    const accessToken = localStorage.getItem('accessToken');
+
+    async function fetchProfile() {
+        const profileId = new URLSearchParams(window.location.search).get('profileId');
+
+        // Устанавливаем значения в скрытые поля формы
+        document.getElementById('accountId').value = accountId;
+        document.getElementById('accessToken').value = accessToken;
+        document.getElementById('profileId').value = profileId;
+
+        const formData = new FormData(document.getElementById('profileForm'));
+
+        const response = await fetch('https://api.dkon.app/api/v3/method/profile.get', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            document.getElementById('avatar').src = data.normalPhotoUrl;
+            document.getElementById('cover').style.backgroundImage = `url(${data.normalCoverUrl || 'https://res.dkon.app/img/cover_none.png'})`;
+            document.getElementById('fullname').innerText = data.fullname;
+            document.getElementById('username').innerText = `@${data.username}`;
+
+                       // Установка статуса
+            const statusElement = document.getElementById('status');
+            if (data.status) {
+                statusElement.innerText = data.status;
+            }
+            // Установка онлайн-статуса
+            if (data.online) {
+                statusElement.innerText += (data.status ? ' | ' : '') + 'Online';
+                statusElement.classList.add('status');
+            } else {
+                statusElement.innerText += (data.status ? ' | ' : '') + 'Offline';
+                statusElement.classList.remove('status');
+                statusElement.classList.add('offline');
+            }
+
+            // Добавляем обработчик события для кнопки "Написать в ЛС"
+            document.getElementById('chatButton').addEventListener('click', function() {
+                openChat(profileId, data.username);
+            });
+        } else {
+            console.error('Ошибка при получении профиля:', data.error_code);
+        }
+    }
+
+    async function openChat(profileId, username) {
+        const formData = new FormData();
+        formData.append('clientId', '1302'); // Замените на ваш clientId
+        formData.append('accountId', accountId);
+        formData.append('accessToken', accessToken);
+        formData.append('profileId', profileId);
+        formData.append('chatToUserId', profileId);
+        formData.append('messageText', `Private chat with ${username} started!`);
+
+        try {
+            const response = await fetch(messageApiUrl, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (!data.error) {
+                window.location.href = `dialogs.html?profileId=${profileId}&chatId=${data.chatId}`;
+            } else {
+                console.error('Ошибка при создании чата:', data.error_code);
+            }
+        } catch (error) {
+            console.error('Ошибка при создании чата:', error);
+        }
+    }
+
+    window.onload = fetchProfile;
+</script>
+
+</body>
+</html-->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .profile {
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cover {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: -50px auto 10px;
+            display: block;
+            border: 3px solid white;
+        }
+        .info {
+            text-align: center;
+            padding: 20px;
+        }
+        .status {
+            color: green;
+        }
+        .offline {
+            color: red;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px auto;
+        }
+        .back-button, .chat-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover, .chat-button:hover {
+            background-color: #0056b3;
+        }
+        .news-feed {
+            padding: 20px;
+        }
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile">
+    <form id="profileForm" method="POST" action="https://api.dkon.app/api/v3/method/profile.get">
+        <input type="hidden" name="accountId" value="" id="accountId">
+        <input type="hidden" name="accessToken" value="" id="accessToken">
+        <input type="hidden" name="profileId" value="" id="profileId">
+    </form>
+    <div id="cover" class="cover"></div>
+    <img id="avatar" class="avatar" src="" alt="Аватарка">
+    <div class="info">
+        <h2 id="fullname"></h2>
+        <p id="username"></p>
+        <p id="status" class="status"></p>
+    </div>
+    <div class="button-container">
+        <a href="search.html" class="back-button">Назад</a>
+        <button id="chatButton" class="chat-button">Написать в ЛС</button>
+    </div>
+    <div class="news-feed" id="newsFeed"></div>
+</div>
+
+<script>
+    const messageApiUrl = 'https://api.dkon.app/api/v3/method/chat.create'; // Замените на правильный URL API для создания чата
+    const accountId = localStorage.getItem('accountId');
+    const accessToken = localStorage.getItem('accessToken');
+
+    async function fetchProfile() {
+        const profileId = new URLSearchParams(window.location.search).get('profileId');
+
+        // Устанавливаем значения в скрытые поля формы
+        document.getElementById('accountId').value = accountId;
+        document.getElementById('accessToken').value = accessToken;
+        document.getElementById('profileId').value = profileId;
+
+        const formData = new FormData(document.getElementById('profileForm'));
+
+        const response = await fetch('https://api.dkon.app/api/v3/method/profile.get', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.error) {
+            document.getElementById('avatar').src = data.normalPhotoUrl;
+            document.getElementById('cover').style.backgroundImage = `url(${data.normalCoverUrl || 'https://res.dkon.app/img/cover_none.png'})`;
+            document.getElementById('fullname').innerText = data.fullname;
+            document.getElementById('username').innerText = `@${data.username}`;
+
+            // Установка статуса
+            const statusElement = document.getElementById('status');
+            if (data.status) {
+                statusElement.innerText = data.status;
+            }
+           
+            // Установка онлайн-статуса
+            if (data.online) {
+                statusElement.innerText += (data.status ? ' | ' : '') + 'Online';
+                statusElement.classList.add('status');
+            } else {
+                statusElement.innerText += (data.status ? ' | ' : '') + 'Offline';
+                statusElement.classList.remove('status');
+                statusElement.classList.add('offline');
+            }
+
+            // Проверка на количество постов
+            if (parseInt(data.postsCount) > 0) {
+                await loadNewsFeed(profileId);
+            }
+
+            // Добавляем обработчик события для кнопки "Написать в ЛС"
+            document.getElementById('chatButton').addEventListener('click', function() {
+                openChat(profileId, data.username);
+            });
+        } else {
+            console.error('Ошибка при получении профиля:', data.error_code);
+        }
+    }
+
+    async function loadNewsFeed(profileId) {
+        const formData = new FormData();
+        formData.append('accountId', localStorage.getItem('accountId'));
+        formData.append('accessToken', localStorage.getItem('accessToken'));
+        formData.append('profileId', profileId);
+
+        try {
+            const response = await fetch('https://api.dkon.app/api/v3/method/wall.get', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!data.error) {
+                const newsFeed = document.getElementById('newsFeed');
+                newsFeed.innerHTML = ''; // Очищаем предыдущие посты
+
+                // Обработка полученных постов
+                data.posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+                    postElement.innerHTML = `
+                        <h3>${post.fromUserFullname} (@${post.fromUserUsername})</h3>
+                        <p>${post.post}</p>
+                        <p><small>${post.date} - ${post.timeAgo}</small></p>
+                    `;
+                    newsFeed.appendChild(postElement);
+                });
+            } else {
+                console.error('Ошибка при получении постов:', data.error_code);
+            }
+        } catch (error) {
+            console.error('Ошибка при выполнении запроса к wall.get:', error);
+        }
+    }
+
+    async function openChat(profileId, username) {
+        const formData = new FormData();
+        formData.append('clientId', '1302'); // Замените на ваш clientId
+        formData.append('accountId', accountId);
+        formData.append('accessToken', accessToken);
+        formData.append('profileId', profileId);
+        formData.append('chatToUserId', profileId);
+        formData.append('messageText', `Private chat with ${username} started!`);
+
+        try {
+            const response = await fetch(messageApiUrl, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            if (!data.error) {
+                window.location.href = `dialogs.html?profileId=${profileId}&chatId=${data.chatId}`;
+            } else {
+                console.error('Ошибка при создании чата:', data.error_code);
+            }
+        } catch (error) {
+            console.error('Ошибка при создании чата:', error);
+        }
+    }
+
+    window.onload = fetchProfile;
+</script>
+
+</body>
+</html>

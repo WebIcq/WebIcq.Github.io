@@ -1,0 +1,23 @@
+{
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "wltmsg": "Chào mừng đến với Messenger",
+    "username": "Tên người dùng",
+    "password": "Mật khẩu",
+    "logintext": "Tên người dùng (6-12 ký tự, chữ cái, số, gạch dưới)",
+    "fullnametxt": "Họ và tên (1-20 ký tự)",
+    "passtxt": "Mật khẩu (6-32 ký tự)",
+    "email": "Email",
+    "ref": "người giới thiệu",
+    "auth": "Ủy quyền",
+    "enter": "Nhập",
+    "messenger": "Messenger",
+    "last_dialogs": "Cuộc trò chuyện gần đây",
+    "msgtp": "Nhập một tin nhắn",
+    "searchuser": "Tìm kiếm người dùng",
+    "back": "quay lại",
+    "search": "Tìm kiếm",
+    "search_query": "Nhập truy vấn tìm kiếm",
+    "no_users_found": "Không tìm thấy người dùng.",
+    "profile_sitting": "Cài đặt hồ sơ"
+}

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title dkon-trans="messenger">Dkon Messenger</title>
+    <script src="locales/dkon.js"></script>
+     <script src="js/dialog-auth.js"></script>
+    <link rel="stylesheet" href="https://res.dkon.app/laptop-style/b/r/bootstrap-4.5.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://res.dkon.app/laptop-style/css/font-awesome.min.css" 
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            
+            background-color: #4a76a8;
+            background-image: linear-gradient(90deg, #4a76a8 0%, #9FACE6 100%);
+            min-height: 100vh;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 1rem;
+        }
+        
+        .
+        
+        .shadow {
+            z-index: 999;
+            margin: 0 auto;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: scroll;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 1rem;
+        }
+
+        .text-small {
+            font-size: 0.9rem;
+        }
+
+        .messages-box,
+        .chat-box {
+            height: 600px; /* Увеличиваем высоту */
+            overflow-y: scroll;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        input::placeholder {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .message.sent .media {
+            flex-direction: row-reverse;
+        }
+
+        .message.sent .media-body {
+            text-align: right;
+        }
+
+        .message.sent .media-body .bg-light {
+            background-color: #d1ecf1;
+        }
+
+        .text-small {
+            font-size: 0.9rem;
+            overflow-wrap: break-word; /* Позволяет переносить длинные слова */
+            word-wrap: break-word; /* Устаревший аналог, для совместимости с более старыми браузерами */
+            word-break: break-all; /* Разбивает длинные слова на части */
+            white-space: normal; /* Позволяет переносить текст на новую строку */
+        }
+
+        .button {
+            font-size: 24px; /* Размер иконок */
+            background: #ffffff; /* Белый фон */
+            border: 1px solid #ccc; /* Светло-серая рамка */
+            border-radius: 5px; /* Закругленные углы */
+            cursor: pointer; /* Указываем, что это кнопка */
+            margin: 5px; /* Отступы */
+            padding: 5px; /* Внутренние отступы */
+            transition: background 0.3s, transform 0.3s; /* Плавный переход */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Тень для кнопок */
+            font-size: 16px; /* Размер текста для маленьких кнопок */
+        }
+
+        .button:hover {
+            background: #e0e0e0; /* Цвет фона при наведении */
+            transform: scale(1.1); /* Увеличение кнопки при наведении */
+        }
+
+        .button:focus {
+            outline: none; /* Убираем обводку при фокусе */
+        }
+
+        .left {
+            float: left;
+            padding: 0 20px 20px 0;
+        }
+
+        .small-button {
+            font-size: 16px; /* Размер текста для маленьких кнопок */
+            padding: 5px 10px; /* Внутренние отступы для маленьких кнопок */
+        }
+
+        /* Убираем лишние отступы */
+        .chat-box {
+            margin-top: 0; /* Убираем верхний отступ */
+        }
+
+        .messages-box {
+            margin-bottom: 0; /* Убираем нижний отступ */
+        }
+        
+        .avatar {
+            width: 50px; /* Фиксированная ширина */
+            height: 50px; /* Фиксированная высота */
+            object-fit: cover; /* Обрезка изображения, чтобы оно вписывалось в заданные размеры */
+        }
+
+        .no-select {
+            user-select: none; /* Для большинства браузеров */
+            -webkit-user-select: none; /* Для Safari */
+            -moz-user-select: none; /* Для Firefox */
+            -ms-user-select: none; /* Для Internet Explorer/Edge */
+        }
+
+        .image-preview {
+            width: 30px; /* Ширина для превью изображения */
+            height: 30px; /* Высота для превью изображения */
+            object-fit: cover; /* Обрезка изображения */
+            border-radius: 5px; /* Закругленные углы */
+            display: none; /* Скрываем по умолчанию */
+        }
+</style>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="row rounded-lg overflow-hidden shadow">
+            <!-- Users box-->
+            <div class="col-5 px-0">
+                <div class="bg-white">
+                    <div class="no-select bg-gray px-4 py-2 bg-light d-flex justify-content-between align-items-center">
+                        <p dkon-trans="last_dialogs" class="h5 mb-0 py-1">Recent</p>
+                        <div>
+                            <button class="button small-button" id="searchButton">🔍</button>
+                            <button class="button small-button" id="settingsButton">⚙️</button>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="no-select messages-box" id="dialogs"></div>
+                </div>
+            </div>
+            <!-- Chat Box-->
+            
+              <style type="text/css"> 
+             
+        #pizda {
+    background-image: url('https://res.dkon.app/img/logo.png');
+    background-repeat:no-repeat;
+    background-position: center center;
+}
+             
+            </style>
+            
+            
+            <div id="pizda" class="col-7 px-0"> 
+                <div class="px-4 py-2 bg-light" id="Xff" style="display: none;"></div>
+                <div class="px-4 py-5 chat-box bg-white" id="chat" style="display: none;">
+                    <div id="chatMessages"></div>
+                </div>
+                <form id="messageForm" class="bg-light" style="display: none;">
+                    <div class="input-group">
+                        <input type="file" id="imageInput" accept="image/png, image/jpeg" class="form-control rounded-0 border-0 py-4 bg-light" style="display: none;">
+                        <input type="text" id="messageInput" dkon-trans="msgtp" placeholder="Enter a message..." class="form-control rounded-0 border-0 py-4 bg-light">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-link" id="uploadButton"> <i class="fa fa-upload"></i></button>
+                            <img id="imagePreview" class="image-preview" src="" alt="Image Preview">
+                            <button type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiUrlDialogs = 'https://api.dkon.app/api/v3/method/dialogs_new.get';
+        const apiUrlChat = 'https://api.dkon.app/api/v3/method/chat.get';
+        const apiUrlSend = 'https://api.dkon.app/api/v3/method/msg.new';
+        const apiUrlUploadImg = 'https://api.dkon.app/api/v3/method/msg.uploadImg';
+        const clientId = 1302;
+        const accountId = localStorage.getItem('accountId');
+        const accessToken = localStorage.getItem('accessToken');
+        let currentChatId = null;
+        let bladin4 = null;
+        let bladin5 = null;
+        let uploadedImageUrl = null;
+
+        async function loadDialogs() {
+            const response = await fetch(apiUrlDialogs, {
+                method: 'POST',
+                body: new URLSearchParams({
+                    clientId,
+                    accountId,
+                    accessToken
+                })
+            });
+            const data = await response.json();
+            const dialogsDiv = document.getElementById('dialogs');
+            dialogsDiv.innerHTML = '';
+
+            data.chats.forEach(chat => {
+                const dialogDiv = document.createElement('a');
+                dialogDiv.className = 'list-group-item list-group-item-action';
+                const truncatedMessage = chat.lastMessage.length > 30 ? chat.lastMessage.substring(0, 30) + '...' : chat.lastMessage;
+                dialogDiv.innerHTML = `
+                    <div class="media">
+                        <img src="${chat.withUserPhotoUrl || 'https://res.dkon.app/img/profile_default_photo.png'}" alt="user" class="avatar rounded-circle">
+                        <div class="media-body ml-4">
+                            <h6 class="mb-0">${chat.withUserFullname}</h6>
+                            <small class="small font-weight-bold" title="${chat.lastMessageAgo}">${truncatedMessage}</small>
+                        </div>
+                    </div>
+                `;
+                dialogDiv.addEventListener('click', () => loadChat(chat.id, chat.withUserId));
+                dialogsDiv.appendChild(dialogDiv);
+            });
+        }
+
+        async function loadChat(chatId, profileId) {
+            currentChatId = chatId;
+            document.getElementById('messageForm').style.display = 'block';
+            document.getElementById('Xff').style.display = 'block';
+            document.getElementById('chat').style.display = 'block';
+            const response = await fetch(apiUrlChat, {
+                method: 'POST',
+                body: new URLSearchParams({
+                    accountId,
+                    accessToken,
+                    profileId,
+                    chatId
+                })
+            });
+            const data = await response.json();
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatMessagesDiv.innerHTML = '';
+            bladin4 = data.chatFromUserId;
+            bladin5 = data.chatToUserId;
+
+            data.messages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                const isSentByCurrentUser = message.fromUserId == accountId;
+
+                messageDiv.className = 'message ' + (isSentByCurrentUser ? 'sent' : 'received');
+
+                const imgUrl = message.fromUserPhotoUrl || 'https://res.dkon.app/img/profile_default_photo.png';
+                let messageContent;
+
+                if (message.stickerImgUrl && message.imgUrl === message.stickerImgUrl) {
+                    messageContent = `<img src="${message.stickerImgUrl}" alt="sticker" width="100" class="rounded">`;
+                } else if (message.imgUrl) {
+                    messageContent = `
+                        <img src="${message.imgUrl}" alt="image" style="max-width: 100%; height: auto;" class="rounded">
+                        <p class="text-small mb-0 text-muted">${message.message}</p>
+                    `;
+                } else {
+                    const formattedMessage = formatMessageText(message.message);
+                    messageContent = `<p class="text-small mb-0 text-muted">${formattedMessage}</p>`;
+                }
+
+                messageDiv.innerHTML = `
+                    <div class="media">
+                        <img src="${imgUrl}" alt="user" width="50" class="rounded-circle">
+                        <div class="media-body ml-3">
+                            <div class="bg-light rounded py-2 px-3 mb-2">
+                                ${messageContent}
+                            </div>
+                            <p class="small text-muted">${new Date(message.createAt * 1000).toLocaleTimeString()} | ${new Date(message.createAt * 1000).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                `;
+                chatMessagesDiv.insertBefore(messageDiv, chatMessagesDiv.firstChild);
+            });
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('accountId', accountId);
+            formData.append('accessToken', accessToken);
+            formData.append('uploaded_file', file);
+
+            const response = await fetch(apiUrlUploadImg, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!data.error) {
+                uploadedImageUrl = data.imgUrl; //
+            } else {
+                console.error('Ошибка загрузки изображения:', data.error_description);
+            }
+        }
+
+        async function sendMessage(event) {
+            event.preventDefault();
+            const messageText = document.getElementById('messageInput').value;
+
+            if (!currentChatId) return;
+
+            const myId = accountId;
+            const recipientId = bladin4 === myId ? bladin5 : bladin4;
+
+            const response = await fetch(apiUrlSend, {
+                method: 'POST',
+                body: new URLSearchParams({
+                    clientId,
+                    accountId,
+                    accessToken,
+                    profileId: recipientId,
+                    chatFromUserId: myId,
+                    chatToUserId: recipientId,
+                    chatId: currentChatId,
+                    messageText: messageText,
+                    messageImg: uploadedImageUrl
+                })
+            });
+
+            if (response.ok) {
+                document.getElementById('messageInput').value = '';
+                uploadedImageUrl = null; // 
+                document.getElementById('imagePreview').src = ''; // 
+                document.getElementById('imagePreview').style.display = 'none'; // 
+                document.getElementById('uploadButton').style.display = '';  //
+                loadChat(currentChatId, recipientId); // 
+                loadDialogs(); // 
+            } else {
+                console.error('Ошибка при отправке сообщения');
+            }
+        }
+
+    
+        function formatMessageText(text) {
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlPattern, (url) => {
+        return `<a href="#" onclick="openInBrowser('https://dkon.app/go?to=${url}')" style="color: blue; text-decoration: underline;">${url}</a>`;
+    });
+}
+
+//function openInBrowser(url) {
+//    const { shell } = require('electron');
+ //   shell.openExternal(url);
+//}
+
+     function openInBrowser(url) {
+            window.open(url, '_blank'); 
+        }   
+        
+        document.getElementById('uploadButton').addEventListener('click', () => {
+            document.getElementById('imageInput').click(); //
+        });
+
+        document.getElementById('imageInput').addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                await uploadImage(file); // 
+                document.getElementById('uploadButton').style.display = 'none';
+                document.getElementById('imagePreview').src = URL.createObjectURL(file); // 
+                document.getElementById('imagePreview').style.display = 'block'; // 
+              
+            }
+        });
+
+        document.getElementById('messageInput').addEventListener('paste', async (event) => {
+            const items = (event.clipboardData || window.clipboardData).items;
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file') {
+                    const file = item.getAsFile();
+                    if (file) {
+                        await uploadImage(file); // 
+                        document.getElementById('imagePreview').src = URL.createObjectURL(file); // 
+                        document.getElementById('imagePreview').style.display = 'block'; // 
+                    }
+                }
+            }
+        });
+
+        setInterval(() => {
+            loadDialogs();
+            if (currentChatId) {
+                loadChat(currentChatId, bladin4);
+            }
+        }, 2500);
+
+        document.getElementById('messageForm').addEventListener('submit', sendMessage);
+        document.addEventListener("DOMContentLoaded", loadDialogs);
+        
+        document.getElementById('searchButton').addEventListener('click', () => {
+            window.location.href = `search.html`;
+        });    
+        
+        document.getElementById('settingsButton').addEventListener('click', () => {
+            window.location.href = `settings.html`;
+        });
+        
+        
+      
+        
+        
+    </script>
+    
+
+</body>
+</html>

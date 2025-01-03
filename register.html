@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title dkon-trans="register">Register</title>
+    <link rel="stylesheet" href="css/r.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">𝓓𝓪𝓵𝓪𝓶 𝓚𝓸𝓷𝓽𝓪𝓴</h1>
+        <h2 dkon-trans="register">Register</h2>
+        <form id="register-form" class="form">
+            <input type="text" id="username" name="username" dkon-trans="logintext" placeholder="Username (6-12 characters, letters, digits, underscores)" required>
+            <input type="text" id="fullname" name="fullname" dkon-trans="fullnametxt" placeholder="Full Name (1-20 characters)" required>
+            <input type="password" id="password" dkon-trans="password" name="password" placeholder="Password (6-32 characters)" required>
+            <input type="email" id="email" dkon-trans="email" name="email" placeholder="Email" required>
+            <input type="text" id="referrer" dkon-trans="ref" name="referrer" placeholder="Referrer (optional)">
+            <button type="submit" dkon-trans="register" class="button">Register</button>
+        </form>
+        <div id="register-error" class="error-message"></div>
+        <a dkon-trans="auth" href="auth.html" class="link">Login</a>
+    </div>
+    <script src="js/r3.js"></script>
+    <script src="locales/dkon.js"></script>
+</body>
+</html>

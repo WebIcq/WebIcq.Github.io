@@ -1,0 +1,23 @@
+{
+    "login": "Logga in",
+    "register": "Registrera",
+    "wltmsg": "Välkommen till Messenger",
+    "username": "Användarnamn",
+    "password": "Lösenord",
+    "logintext": "Användarnamn (6-12 tecken, bokstäver, siffror, understreck)",
+    "fullnametxt": "Fullständigt namn (1-20 tecken)",
+    "passtxt": "Lösenord (6-32 tecken)",
+    "email": "E-post",
+    "ref": "referens",
+    "auth": "Auktorisering",
+    "enter": "Gå in",
+    "messenger": "Messenger",
+    "last_dialogs": "Senaste dialoger",
+    "msgtp": "Skriv ett meddelande",
+    "searchuser": "Sök användare",
+    "back": "tillbaka",
+    "search": "Sök",
+    "search_query": "Ange en sökfråga",
+    "no_users_found": "Inga användare hittades.",
+    "profile_sitting": "Profilinställningar"
+}

@@ -1,0 +1,23 @@
+{
+    "login": "ログイン",
+    "register": "登録",
+    "wltmsg": "Messengerへようこそ",
+    "username": "ユーザー名",
+    "password": "パスワード",
+    "logintext": "ユーザー名（6-12文字、文字、数字、アンダースコア）",
+    "fullnametxt": "フルネーム（1-20文字）",
+    "passtxt": "パスワード（6-32文字）",
+    "email": "メール",
+    "ref": "紹介者",
+    "auth": "認証",
+    "enter": "入る",
+    "messenger": "Messenger",
+    "last_dialogs": "最近の対話",
+    "msgtp": "メッセージを入力",
+    "searchuser": "ユーザー検索",
+    "back": "戻る",
+    "search": "検索",
+    "search_query": "検索クエリを入力",
+    "no_users_found": "ユーザーが見つかりませんでした。",
+    "profile_sitting": "プロフィール設定"
+}

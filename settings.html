@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title dkon-trans="profile_sitting">Настройки профиля</title>
+    <script src="locales/dkon.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        form input, form select, form button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            width: 100%;
+        }
+        form button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        #back-button {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #back-button:hover {
+            background-color: #5a6268;
+        }
+        .avatar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .avatar img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+        }
+        .referral-code {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .referral-code input {
+            flex-grow: 1;
+            cursor: text;
+        }
+        .referral-code button {
+            flex-shrink: 0;
+            background-color: #28a745;
+            color: #fff;
+        }
+        .referral-code button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button dkon-trans="back" id="back-button">back</button>
+        <h1 dkon-trans="profile_sitting" >Profile Settings</h1>
+        <div class="avatar" id="avatar-container">
+            <img id="avatar" src="https://res.dkon.app/img/profile_default_photo.png" alt="Аватарка">
+            <form id="upload-avatar-form">
+                <input type="file" id="avatar-file" name="uploaded_file" accept="image/png, image/jpeg, image/jpg">
+                <button dkon-trans="edit_photo" type="submit">Edit a photo</button>
+            </form>
+        </div>
+        <form id="settings-form">
+            <input type="hidden" name="clientId" value="1302">
+            <input type="hidden" name="accountId" value="">
+            <input type="hidden" name="accessToken" value="">
+            <label for="fullname">Name:</label>
+            <input type="text" id="fullname" name="fullname" maxlength="15" placeholder="Enter a name">
+            <label for="bio">Status:</label>
+            <input type="text" id="bio" name="bio" maxlength="40" placeholder="Enter the status">
+            <label for="sex">Gender:</label>
+            <select id="sex" name="sex">
+                <option value="0">Not selected</option>
+                <option value="1">Male</option>
+                <option value="2">Female</option>
+            </select>
+            <label for="location">City:</label>
+            <input type="text" id="location" name="location" placeholder="Enter the city">
+            <button type="submit">Save Settings</button>
+        </form>
+        <div class="referral-code">
+            <label for="referral-code">Referral code:</label>
+            <input type="text" id="referral-code" readonly>
+            <button id="copy-button">Copy</button>
+        </div>
+    </div>
+    <script>
+        const saveSettingsApiUrl = 'https://api.dkon.app/api/v3/method/account.saveSettings';
+        const uploadAvatarApiUrl = 'https://api.dkon.app/api/v3/method/profile.uploadImg';
+        const accountId = localStorage.getItem('accountId');
+        const accessToken = localStorage.getItem('accessToken');
+
+        document.querySelector('#settings-form input[name="accountId"]').value = accountId;
+        document.querySelector('#settings-form input[name="accessToken"]').value = accessToken;
+
+        async function loadSettings() {
+            const formData = new FormData();
+            formData.append('accountId', accountId);
+            formData.append('accessToken', accessToken);
+
+            try {
+                const response = await fetch(saveSettingsApiUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (!data.error) {
+                    document.getElementById('fullname').value = data.fullname || '';
+                    document.getElementById('bio').value = data.status || '';
+                    document.getElementById('sex').value = data.sex || '0';
+                    document.getElementById('location').value = data.location || '';
+                    document.getElementById('avatar').src = data.normalPhotoUrl || 'https://res.dkon.app/img/profile_default_photo.png';
+                    document.getElementById('referral-code').value = data.id || '';
+                } else {
+                    console.error('Ошибка при загрузке настроек:', data.error_code);
+                }
+            } catch (error) {
+                console.error('Ошибка при загрузке настроек:', error);
+            }
+        }
+
+        document.getElementById('settings-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(saveSettingsApiUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('Ошибка при сохранении настроек:', data.error_code);
+                } else {
+                    alert('Настройки успешно сохранены!');
+                }
+            } catch (error) {
+                console.error('Ошибка при сохранении настроек:', error);
+            }
+        });
+
+        document.getElementById('upload-avatar-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            formData.append('accountId', accountId);
+            formData.append('accessToken', accessToken);
+
+            try {
+                const response = await fetch(uploadAvatarApiUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('Ошибка при загрузке изображения:', data.error_code);
+                } else {
+                    document.getElementById('avatar').src = data.normalPhotoUrl;
+                    alert('Фотография успешно обновлена!');
+                }
+            } catch (error) {
+                console.error('Ошибка при загрузке изображения:', error);
+            }
+        });
+
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = 'dialogs.html';
+        });
+
+        document.getElementById('copy-button').addEventListener('click', function() {
+            const referralCodeInput = document.getElementById('referral-code');
+            referralCodeInput.select();
+            document.execCommand('copy');
+            alert('Реферальный код скопирован: ' + referralCodeInput.value);
+        });
+
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+    "login": "Kirjaudu",
+    "register": "Rekisteröidy",
+    "wltmsg": "Tervetuloa Messengeriin",
+    "username": "Käyttäjänimi",
+    "password": "Salasana",
+    "logintext": "Käyttäjänimi (6-12 merkkiä, kirjaimia, numeroita, alaviivoja)",
+    "fullnametxt": "Koko nimi (1-20 merkkiä)",
+    "passtxt": "Salasana (6-32 merkkiä)",
+    "email": "Sähköposti",
+    "ref": "suosittelija",
+    "auth": "Valtuutus",
+    "enter": "Syötä",
+    "messenger": "Messenger",
+    "last_dialogs": "Viimeisimmät keskustelut",
+    "msgtp": "Syötä viesti",
+    "searchuser": "Käyttäjän haku",
+    "back": "takaisin",
+    "search": "Haku",
+    "search_query": "Syötä hakukysely",
+    "no_users_found": "Käyttäjiä ei löytynyt.",
+    "profile_sitting": "Profiiliasetukset"
+}

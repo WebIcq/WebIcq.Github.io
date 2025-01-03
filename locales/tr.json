@@ -1,0 +1,23 @@
+{
+    "login": "Giriş",
+    "register": "Kayıt Ol",
+    "wltmsg": "Messenger'a Hoş Geldiniz",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre",
+    "logintext": "Kullanıcı adı (6-12 karakter, harfler, rakamlar, alt çizgi)",
+    "fullnametxt": "Tam Ad (1-20 karakter)",
+    "passtxt": "Şifre (6-32 karakter)",
+    "email": "E-posta",
+    "ref": "yönlendiren",
+    "auth": "Yetkilendirme",
+    "enter": "Giriş",
+    "messenger": "Messenger",
+    "last_dialogs": "Son Diyaloglar",
+    "msgtp": "Bir mesaj girin",
+    "searchuser": "Kullanıcı Ara",
+    "back": "geri",
+    "search": "Ara",
+    "search_query": "Bir arama sorgusu girin",
+    "no_users_found": "Kullanıcı bulunamadı.",
+    "profile_sitting": "Profil Ayarları"
+}

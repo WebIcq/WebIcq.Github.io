@@ -1,0 +1,23 @@
+{
+    "login": "Inloggen",
+    "register": "Registreren",
+    "wltmsg": "Welkom bij Messenger",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "logintext": "Gebruikersnaam (6-12 tekens, letters, cijfers, underscores)",
+    "fullnametxt": "Volledige naam (1-20 tekens)",
+    "passtxt": "Wachtwoord (6-32 tekens)",
+    "email": "E-mail",
+    "ref": "verwijzer",
+    "auth": "Autorisatie",
+    "enter": "Inloggen",
+    "messenger": "Messenger",
+    "last_dialogs": "Laatste dialogen",
+    "msgtp": "Voer een bericht in",
+    "searchuser": "Zoek gebruiker",
+    "back": "terug",
+    "search": "Zoeken",
+    "search_query": "Voer een zoekopdracht in",
+    "no_users_found": "Geen gebruikers gevonden.",
+    "profile_sitting": "Profielinstellingen"
+}

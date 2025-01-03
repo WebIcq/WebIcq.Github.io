@@ -1,0 +1,23 @@
+{
+    "login": "Masuk",
+    "register": "Daftar",
+    "wltmsg": "Selamat datang di Messenger",
+    "username": "Nama pengguna",
+    "password": "Kata sandi",
+    "logintext": "Nama pengguna (6-12 karakter, huruf, angka, garis bawah)",
+    "fullnametxt": "Nama lengkap (1-20 karakter)",
+    "passtxt": "Kata sandi (6-32 karakter)",
+    "email": "Email",
+    "ref": "referer",
+    "auth": "Otorisasi",
+    "enter": "Masuk",
+    "messenger": "Messenger",
+    "last_dialogs": "Dialog Terakhir",
+    "msgtp": "Masukkan pesan",
+    "searchuser": "Pencarian pengguna",
+    "back": "kembali",
+    "search": "Cari",
+    "search_query": "Masukkan kueri pencarian",
+    "no_users_found": "Tidak ada pengguna yang ditemukan.",
+    "profile_sitting": "Pengaturan profil"
+}
